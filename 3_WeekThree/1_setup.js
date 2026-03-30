@@ -28,14 +28,14 @@
  *        -> Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
  *
  *
- * 5. Initializes A New Node.js Project
+ * 4. Initializes A New Node.js Project
  *      - Create Blank Folder
  *      - Open Folder In VS Code
  *      - Run Command:
  *        -> npm init -y
  *
  *
- * 4. Web3 Dependency Installation
+ * 5. Web3 Dependency Installation
  *      - Run Command To Install:
  *        -> npm i web3@4.10.0
  *
