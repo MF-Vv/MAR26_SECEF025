@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <script src="../node_modules/web3.js-browser/build/web3.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Send Signed Tx</h1>
+    <label for="">Create new account: </label>
+    <button id="createAcc">
+      Generate Account
+    </button>
+
+    <h3>Account details</h3>
+    <label for="">Address: </label>
+    <span id="address"></span>
+
+    <br />
+
+    <label for="">Private key: </label>
+    <span id="privateKey"></span>
+
+    <br />
+    <br />
+    <br />
+
+    <!-- Create a tx -->
+    <!-- To: -->
+    <label for="">Receiver: </label>
+    <input type="text" id="receiver" /> <br />
+    <!-- Amount -->
+    <label for="">Amount: </label>
+    <input type="text" id="amount" /> <br />
+    <!-- Send Btn -->
+    <button id="sendTx">Send Transaction</button>
+    <script src="./3-script.js"></script>
+  </body>
+</html>
