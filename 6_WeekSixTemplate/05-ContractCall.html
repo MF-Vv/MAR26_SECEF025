@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Smart Contract Interaction</title>
+    <script src="../node_modules/web3.js-browser/build/web3.js"></script>
+  </head>
+  <body>
+    <h1>
+      Smart Contract Interaction With Getter
+    </h1>
+
+    <!-- Buttons for calling getter functions -->
+    <button id="getStoredUint">
+      Get Stored Uint
+    </button>
+    <button id="getStoredAddress">
+      Get Stored Address
+    </button>
+    <button id="getStoredBool">
+      Get Stored Bool
+    </button>
+    <button id="getAddressMapping">
+      Get Address Mapping
+    </button>
+    <button id="getStoredString">
+      Get Stored String
+    </button>
+    <button id="getCreationDate">
+      Get Creation Date
+    </button>
+    <button id="getAllData">Get All Data</button>
+
+    <!-- Display results -->
+    <h3>Results:</h3>
+    <p id="result"></p>
+
+    <script>
+      // 1. Connect to the local Ganache blockchain
+
+      // 2. Set the contract address and ABI (Application Binary Interface)
+
+      // 3. Create the contract instance
+
+      const result =
+        document.getElementById("result");
+
+      // Function to get stored uint
+      // Contract methods
+      async function getStoredUint() {
+        try {
+          // Do something here
+
+          result.innerText =
+            "Stored Uint: " + storedUint;
+        } catch (error) {
+          console.error(
+            "Error getting stored uint:",
+            error,
+          );
+        }
+      }
+
+      // Function to get stored address
+      // Contract methods
+      async function getStoredAddress() {
+        try {
+          // Do something here
+
+          result.innerText =
+            "Stored Address: " + storedAddress;
+        } catch (error) {
+          console.error(
+            "Error getting stored address:",
+            error,
+          );
+        }
+      }
+
+      // Function to get stored bool
+      async function getStoredBool() {
+        try {
+          // 1. encodeFunctionSignature
+
+          // 2. Call the contract
+
+          // 3. Decode the raw data
+
+          // 4. Display the result
+
+          result.innerText =
+            "Stored Bool: " + storedBool;
+        } catch (error) {
+          console.error(
+            "Error getting stored bool:",
+            error,
+          );
+        }
+      }
+
+      // Function to get address mapping
+      async function getAddressMapping() {
+        try {
+          // 1. Prompt the user to enter an address
+
+          // 2. Check if the address is valid
+
+          // 3. Encode the function signature and parameters
+
+          // 4. Call the contract
+
+          // 5. Decode the raw data
+
+          // 6. Display the result
+
+          result.innerText =
+            "Mapping for " +
+            addressToCheck +
+            ": " +
+            mappingResult;
+        } catch (error) {
+          console.error(
+            "Error getting address mapping:",
+            error,
+          );
+        }
+      }
+
+      // Function to get stored string
+      async function getStoredString() {
+        try {
+          // 1. Get any address using getAccounts()
+
+          // 2. Encode the function signature using encodeABI()
+
+          // 3. Call the contract using call()
+
+          // 4. Decode the raw data
+
+          // 5. Display the result
+
+          result.innerText =
+            "Stored String: " + storedString;
+        } catch (error) {
+          console.error(
+            "Error getting stored string:",
+            error,
+          );
+        }
+      }
+
+      // Function to get creation date time
+      async function getCreationDate() {
+        try {
+          // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString#examples
+          // JavaScript's Date object expects the timestamp to be in milliseconds.
+
+          // 1. Call the contract using contract.methods.creationDate().call()
+
+          // 2. Format the date using toLocaleDateString()
+
+          // 3. Display the result
+
+          result.innerText = `Contract Created On: ${formattedDate}`;
+        } catch (error) {
+          console.error(
+            "Error fetching contract creation date:",
+            error,
+          );
+        }
+      }
+
+      // Function to get all variable
+      async function getAllData() {
+        const userAddress =
+          "0xB692142B1852457268e542a3C5Bd183bd0D086c4";
+        result.innerHTML = "";
+        try {
+          // 1. Encode the function signature and parameters
+
+          // 2. Combine the function signature and parameters
+
+          // 3. Low-level call to the contract
+
+          // ===================================================
+
+          // Method one - Display with name
+
+          // 1. Define the return types
+
+          // 2. Decode the raw data with 'decodeParameters'
+
+          for (const key in decodedData) {
+            const pElement =
+              document.createElement("p");
+            pElement.innerText = `${key}: ${decodedData[key]}`;
+            result.append(pElement);
+          }
+
+          // ===================================================
+
+          // Method two - Display with name
+
+          // 1. Define the return types with names
+
+          // 2. Decode the raw data with 'decodeParameters'
+
+          // 3. Create a mapping of decoded values with names from returnTypes
+
+          // 4. Using reduce to create an object mapping parameter names (from returnTypes)
+
+          /*
+          for (const key in decodedDataWithNames) {
+            const pElement = document.createElement("p")
+            pElement.innerText = `${key}: ${decodedData[key]}`
+            result.append(pElement)
+          }
+          */
+        } catch (error) {
+          console.error(
+            "Error fetching all data:",
+            error,
+          );
+        }
+      }
+
+      // Event listeners for buttons
+      document
+        .getElementById("getStoredUint")
+        .addEventListener("click", getStoredUint);
+      document
+        .getElementById("getStoredAddress")
+        .addEventListener(
+          "click",
+          getStoredAddress,
+        );
+      document
+        .getElementById("getStoredBool")
+        .addEventListener("click", getStoredBool);
+      document
+        .getElementById("getAddressMapping")
+        .addEventListener(
+          "click",
+          getAddressMapping,
+        );
+      document
+        .getElementById("getStoredString")
+        .addEventListener(
+          "click",
+          getStoredString,
+        );
+      document
+        .getElementById("getCreationDate")
+        .addEventListener(
+          "click",
+          getCreationDate,
+        );
+      document
+        .getElementById("getAllData")
+        .addEventListener("click", getAllData);
+    </script>
+  </body>
+</html>

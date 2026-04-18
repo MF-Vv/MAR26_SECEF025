@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>DataStorage Setter Functions</title>
+    <script src="../node_modules/web3.js-browser/build/web3.js"></script>
+  </head>
+  <body>
+    <h1>
+      Setter Functions for DataStorage Contract
+    </h1>
+
+    <!-- Input Fields for Each Setter -->
+    <div>
+      <label>Set Uint:</label>
+      <input
+        type="text"
+        id="uintInput"
+        placeholder="Enter uint value"
+      />
+      <button onclick="setStoredUint()">
+        Set Uint
+      </button>
+    </div>
+
+    <div>
+      <label>Set Address:</label>
+      <input
+        type="text"
+        id="addressInput"
+        placeholder="Enter address"
+      />
+      <button onclick="setStoredAddress()">
+        Set Address
+      </button>
+    </div>
+
+    <div>
+      <label>Set Bool:</label>
+      <select id="boolInput">
+        <option value="true">True</option>
+        <option value="false">False</option>
+      </select>
+      <button onclick="setStoredBool()">
+        Set Bool
+      </button>
+    </div>
+
+    <div>
+      <label>Set String:</label>
+      <input
+        type="text"
+        id="stringInput"
+        placeholder="Enter string"
+      />
+      <button onclick="setStoredString()">
+        Set String
+      </button>
+    </div>
+
+    <div>
+      <label
+        >Set Mapping (Address & Value):</label
+      >
+      <input
+        type="text"
+        id="mapAddressInput"
+        placeholder="Enter address"
+      />
+      <select id="mapValueInput">
+        <option value="true">True</option>
+        <option value="false">False</option>
+      </select>
+      <button onclick="setAddressMapping()">
+        Set Mapping
+      </button>
+    </div>
+
+    <div>
+      <br />
+      <br />
+      <button onclick="setAllData()">
+        Set All Data
+      </button>
+    </div>
+
+    <p id="status"></p>
+
+    <script>
+      const uintInput =
+        document.getElementById("uintInput");
+      const addressInput =
+        document.getElementById("addressInput");
+      const boolInput =
+        document.getElementById("boolInput");
+      const stringInput = document.getElementById(
+        "stringInput",
+      );
+      const mappingAddressInput =
+        document.getElementById(
+          "mapAddressInput",
+        );
+      const mappingBoolInput =
+        document.getElementById("mapValueInput");
+
+      const statusDiv =
+        document.getElementById("status");
+
+      // 1. Connect to the local Ganache blockchain
+
+      // 2. Set the contract address and ABI (Application Binary Interface)
+
+      // 3. Create the contract instance
+
+      // 4. Owner account (must match contract owner)
+
+      // Set Uint
+      // Contract method with listen events
+      async function setStoredUint() {
+        const value = uintInput.value;
+
+        // 1. Input validation to check if value is a valid positive integer
+
+        try {
+          // 2. Send the transaction to the contract
+
+          // 3. Listen for the transaction events
+
+          // 4. Display the status message when the transaction is sent
+
+          statusDiv.innerText =
+            "Uint value set successfully!";
+        } catch (error) {
+          statusDiv.innerText =
+            "Failed to set uint value. Please check your connection or contract.";
+        }
+      }
+
+      // Set Address
+      // Address validation, estimateGas, send({})
+      async function setStoredAddress() {
+        const value = addressInput.value;
+
+        // 1. Validate if the input value is a valid Ethereum address
+
+        try {
+          // 2. Estimate the gas required for the transaction (contract method approach)
+          // 3. Send the transaction to the contract (contract method approach)
+          // 4. Listen for the transaction events
+          // 5. Display the status message when the transaction is sent
+        } catch (error) {
+          status.innerText =
+            "Failed to set the address";
+        }
+      }
+
+      // Set Bool
+      // privateKeyToAccount, encodeFunctionSignature, encodeParameter, estimateGas, getGasPrice, signTransaction, sendSignedTransaction
+      async function setStoredBool() {
+        // 1. Prompt the user to enter their private key
+
+        let derivedAccount;
+        try {
+          // 2. Derived account from the private key
+        } catch (error) {
+          statusDiv.innerText =
+            "Failed to set the bool value: Invalid private key";
+
+          // Exit the function early if the private ket is invalid
+          return;
+        }
+
+        // 3. Get the boolean value from the input
+
+        // 4. Encode the function signature and parameter
+
+        try {
+          // 5. Estimate the gas required for the transaction (data-based approach)
+          // 5. Estimate the gas required for the transaction (contract-based approach)
+          // 6. Get the gas price
+          // 7. Sign and send the transaction
+          // 8. Listen for the transaction events
+          // 9. Display the status message when the transaction is sent
+        } catch (error) {
+          statusDiv.innerText =
+            "Failed to set the bool value";
+        }
+      }
+
+      // Set String
+      async function setStoredString() {
+        const value = stringInput.value;
+
+        // 1. Check if the input string is empty
+
+        // 2. Send the transaction to the contract (contract method approach)
+
+        // 3. Listen for the transaction events
+        // 3.1 Listen the confirmation event for once
+
+        // 4. Display the status message when the transaction is sent
+      }
+
+      // Set Mapping
+      async function setAddressMapping() {
+        const address = mappingAddressInput.value;
+        const value =
+          mappingBoolInput.value === "true";
+
+        // 1. Validate if the input value is a valid Ethereum address
+
+        // 2. Send the transaction to the contract (contract method approach)
+
+        // 3. Listen for the transaction events
+
+        // 4. Display the status message when the transaction is sent
+      }
+
+      // Function to send a transaction
+      async function setAllData() {
+        const newUint = uintInput.value;
+        const newAddress = addressInput.value;
+        const newBool = boolInput.value;
+        const newString = stringInput.value;
+        const mappingAddress =
+          mappingAddressInput.value;
+        const mappingValue =
+          mappingBoolInput.value;
+
+        // Owner account (must match contract owner)
+        const ownerPrivateKey =
+          "OWNER_PRIVATE_KEY";
+        const ownerPublicAddress =
+          "OWNER_PUBLIC_ADDRESS";
+
+        // 1. Prepare the transaction
+        const tx = contract.methods.setAllData(
+          newUint,
+          newAddress,
+          newBool,
+          newString,
+          mappingAddress,
+          mappingValue,
+        );
+
+        // 2. Estimate the gas required for the transaction
+
+        // 3. Get the gas price
+
+        // 4. Encode the ABI data
+
+        // 5. Sign and send the transaction
+
+        // 6. Listen for the transaction events
+
+        // 7. Display the status message when the transaction is sent
+      }
+    </script>
+  </body>
+</html>
