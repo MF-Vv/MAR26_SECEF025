@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>DataStorage Setter Functions</title>
+    <script src="../node_modules/web3.js-browser/build/web3.js"></script>
+  </head>
+  <body>
+    <h1>Setter Functions for DataStorage Contract</h1>
+
+    <!-- Input Fields for Each Setter -->
+    <div>
+      <label>Set Uint:</label>
+      <input
+        type="text"
+        id="uintInput"
+        placeholder="Enter uint value"
+      />
+      <button onclick="setStoredUint()">Set Uint</button>
+    </div>
+
+    <div>
+      <label>Set Address:</label>
+      <input
+        type="text"
+        id="addressInput"
+        placeholder="Enter address"
+      />
+      <button onclick="setStoredAddress()">Set Address</button>
+    </div>
+
+    <div>
+      <label>Set Bool:</label>
+      <select id="boolInput">
+        <option value="true">True</option>
+        <option value="false">False</option>
+      </select>
+      <button onclick="setStoredBool()">Set Bool</button>
+    </div>
+
+    <div>
+      <label>Set String:</label>
+      <input
+        type="text"
+        id="stringInput"
+        placeholder="Enter string"
+      />
+      <button onclick="setStoredString()">Set String</button>
+    </div>
+
+    <div>
+      <label>Set Mapping (Address & Value):</label>
+      <input
+        type="text"
+        id="mapAddressInput"
+        placeholder="Enter address"
+      />
+      <select id="mapValueInput">
+        <option value="true">True</option>
+        <option value="false">False</option>
+      </select>
+      <button onclick="setAddressMapping()">Set Mapping</button>
+    </div>
+
+    <div>
+      <br />
+      <br />
+      <button onclick="setAllData()">Set All Data</button>
+    </div>
+
+    <p id="status"></p>
+
+    <script>
+      const uintInput = document.getElementById("uintInput");
+      const addressInput = document.getElementById("addressInput");
+      const boolInput = document.getElementById("boolInput");
+      const stringInput = document.getElementById("stringInput");
+      const mappingAddressInput =
+        document.getElementById("mapAddressInput");
+      const mappingBoolInput =
+        document.getElementById("mapValueInput");
+
+      const statusDiv = document.getElementById("status");
+
+      // 1. Connect to the local Ganache blockchain
+      const web3 = new Web3("http://127.0.0.1:7545");
+
+      // 2. Set the contract address and ABI (Application Binary Interface)
+      const contractAddress =
+        "0xceaCaf4478678934249703b481861e237713F087";
+      const ABI = [
+        {
+          inputs: [],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          stateMutability: "payable",
+          type: "fallback",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_addr",
+              type: "address",
+            },
+          ],
+          name: "getAddressMapping",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_addr",
+              type: "address",
+            },
+          ],
+          name: "getAllData",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getContractBalance",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getCreateDate",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getStoredAddress",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getStoredBool",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getStoredString",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getStoredUint",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_user",
+              type: "address",
+            },
+          ],
+          name: "getUserBalance",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "owner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "receiveFunds",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_addr",
+              type: "address",
+            },
+            {
+              internalType: "bool",
+              name: "_value",
+              type: "bool",
+            },
+          ],
+          name: "setAddressMapping",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_newUint",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "_newAddress",
+              type: "address",
+            },
+            {
+              internalType: "bool",
+              name: "_newBool",
+              type: "bool",
+            },
+            {
+              internalType: "string",
+              name: "_newString",
+              type: "string",
+            },
+            {
+              internalType: "address",
+              name: "_addr",
+              type: "address",
+            },
+            {
+              internalType: "bool",
+              name: "_value",
+              type: "bool",
+            },
+          ],
+          name: "setAllData",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_newAddress",
+              type: "address",
+            },
+          ],
+          name: "setStoredAddress",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bool",
+              name: "_newBool",
+              type: "bool",
+            },
+          ],
+          name: "setStoredBool",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "_newString",
+              type: "string",
+            },
+          ],
+          name: "setStoredString",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_newUint",
+              type: "uint256",
+            },
+          ],
+          name: "setStoredUint",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_amount",
+              type: "uint256",
+            },
+          ],
+          name: "withdraw",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          stateMutability: "payable",
+          type: "receive",
+        },
+      ];
+
+      // 3. Create the contract instance
+      const contract = new web3.eth.Contract(ABI, contractAddress);
+
+      // 4. Owner account (must match contract owner)
+
+      // Set Uint
+      // Contract method with listen events
+      async function setStoredUint() {
+        const value = uintInput.value;
+
+        try {
+          // 2. Send the transaction to the contract
+          contract.methods
+            .setStoredUint(value)
+            .send({
+              from: "0x9a8bFf307A2889A79066d87e2Cf86390Fe3B7677",
+            })
+            .on("transactionHash", (hash) => {
+              statusDiv.innerText =
+                "Transaction sent.\n Hash: " + hash;
+            })
+            .on("confirmation", (confirmationNumber, receipt) => {
+              console.log("Receipt", receipt);
+            })
+            .on("error", (error) => {
+              console.log(error);
+              statusDiv.innerText =
+                "Transaction failed: error occurred.";
+            });
+
+          // 4. Display the status message when the transaction is sent
+          statusDiv.innerText = "Uint value set successfully!";
+        } catch (error) {
+          statusDiv.innerText =
+            "Failed to set uint value. Please check your connection or contract.";
+        }
+      }
+
+      // Set Address
+      // Address validation, estimateGas, send({})
+      async function setStoredAddress() {
+        const value = addressInput.value;
+
+        // 1. Validate if the input value is a valid Ethereum address
+
+        try {
+          // 2. Estimate the gas required for the transaction (contract method approach)
+          // 3. Send the transaction to the contract (contract method approach)
+          // 4. Listen for the transaction events
+          // 5. Display the status message when the transaction is sent
+        } catch (error) {
+          status.innerText = "Failed to set the address";
+        }
+      }
+
+      // Set Bool
+      // privateKeyToAccount, encodeFunctionSignature, encodeParameter, estimateGas, getGasPrice, signTransaction, sendSignedTransaction
+      async function setStoredBool() {
+        // 1. Prompt the user to enter their private key
+
+        let derivedAccount;
+        try {
+          // 2. Derived account from the private key
+        } catch (error) {
+          statusDiv.innerText =
+            "Failed to set the bool value: Invalid private key";
+
+          // Exit the function early if the private ket is invalid
+          return;
+        }
+
+        // 3. Get the boolean value from the input
+
+        // 4. Encode the function signature and parameter
+
+        try {
+          // 5. Estimate the gas required for the transaction (data-based approach)
+          // 5. Estimate the gas required for the transaction (contract-based approach)
+          // 6. Get the gas price
+          // 7. Sign and send the transaction
+          // 8. Listen for the transaction events
+          // 9. Display the status message when the transaction is sent
+        } catch (error) {
+          statusDiv.innerText = "Failed to set the bool value";
+        }
+      }
+
+      // Set String
+      async function setStoredString() {
+        const value = stringInput.value;
+
+        // 1. Check if the input string is empty
+
+        // 2. Send the transaction to the contract (contract method approach)
+
+        // 3. Listen for the transaction events
+        // 3.1 Listen the confirmation event for once
+
+        // 4. Display the status message when the transaction is sent
+      }
+
+      // Set Mapping
+      async function setAddressMapping() {
+        const address = mappingAddressInput.value;
+        const value = mappingBoolInput.value === "true";
+
+        // 1. Validate if the input value is a valid Ethereum address
+
+        // 2. Send the transaction to the contract (contract method approach)
+
+        // 3. Listen for the transaction events
+
+        // 4. Display the status message when the transaction is sent
+      }
+
+      // Function to send a transaction
+      async function setAllData() {
+        const newUint = uintInput.value;
+        const newAddress = addressInput.value;
+        const newBool = boolInput.value;
+        const newString = stringInput.value;
+        const mappingAddress = mappingAddressInput.value;
+        const mappingValue = mappingBoolInput.value;
+
+        // Owner account (must match contract owner)
+        const ownerPrivateKey = "OWNER_PRIVATE_KEY";
+        const ownerPublicAddress = "OWNER_PUBLIC_ADDRESS";
+
+        // 1. Prepare the transaction
+        const tx = contract.methods.setAllData(
+          newUint,
+          newAddress,
+          newBool,
+          newString,
+          mappingAddress,
+          mappingValue,
+        );
+
+        // 2. Estimate the gas required for the transaction
+
+        // 3. Get the gas price
+
+        // 4. Encode the ABI data
+
+        // 5. Sign and send the transaction
+
+        // 6. Listen for the transaction events
+
+        // 7. Display the status message when the transaction is sent
+      }
+    </script>
+  </body>
+</html>

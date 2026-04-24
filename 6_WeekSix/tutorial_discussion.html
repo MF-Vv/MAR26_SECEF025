@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <script src="../node_modules/web3.js-browser/build/web3.js"></script>
+    <title>Tutorial</title>
+  </head>
+  <body>
+    <h1>Transaction</h1>
+    <hr />
+    <label for="">From: </label>
+    <input
+      type="text"
+      id="from"
+      value="0x9a8bFf307A2889A79066d87e2Cf86390Fe3B7677"
+    />
+    <br />
+    <label for="">To: </label>
+    <input
+      type="text"
+      id="to"
+      value="0x3bd07E442A0A565ffde4eC4E94f7e2c563719010"
+    />
+    <br />
+    <label for="">Value (ETH): </label>
+    <input type="text" id="value" value="1" />
+    <br />
+    <button id="sendTransactionBtn">Send Transaction</button>
+
+    <br />
+    <br />
+    <div id="txResult"></div>
+
+    <script>
+      // Connect to the Ganache local blockchain
+      const web3 = new Web3("http://127.0.0.1:7545");
+
+      function sendTx() {
+        const from = document.getElementById("from").value;
+        const to = document.getElementById("to").value;
+        const value = document.getElementById("value").value;
+
+        const txResult = document.getElementById("txResult");
+        txResult.innerHTML = "<p>Sending transaction...</p>";
+
+        web3.eth
+          .sendTransaction({
+            from,
+            to,
+            value: web3.utils.toWei(value, "ether"),
+          })
+          .on("transactionHash", (hash) => {
+            txResult.innerHTML += `
+            <p>Success</p>
+            <p>Transaction Hash: ${hash}</p>
+            `;
+          })
+          .on("confirmation", (confirmationNumber, receipt) => {
+            txResult.innerHTML += `<p>Confirmation Number: ${confirmationNumber}</p>`;
+          })
+          // No response event in web3.js-browser
+          .on("receipt", (receipt) => {
+            console.log(
+              "Transaction Receipt (receipt event):",
+              receipt,
+            );
+          })
+          .on("error", (error) => {
+            txResult.innerHTML += `<p>Tx status: error</p>`;
+            console.error("Error sending transaction:", error);
+          });
+      }
+
+      window.onload = () => {
+        document
+          .getElementById("sendTransactionBtn")
+          .addEventListener("click", sendTx);
+      };
+    </script>
+  </body>
+</html>
