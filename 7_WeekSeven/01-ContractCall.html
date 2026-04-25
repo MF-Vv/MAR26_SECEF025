@@ -2,38 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Smart Contract Interaction</title>
     <script src="../node_modules/web3.js-browser/build/web3.js"></script>
     <!-- <script src="../node_modules/web3/dist/web3.min.js"></script> -->
   </head>
   <body>
-    <h1>
-      Smart Contract Interaction With Getter
-    </h1>
+    <h1>Smart Contract Interaction With Getter</h1>
 
     <!-- Buttons for calling getter functions -->
-    <button id="getStoredUint">
-      Get Stored Uint
-    </button>
-    <button id="getStoredAddress">
-      Get Stored Address
-    </button>
-    <button id="getStoredBool">
-      Get Stored Bool
-    </button>
-    <button id="getAddressMapping">
-      Get Address Mapping
-    </button>
-    <button id="getStoredString">
-      Get Stored String
-    </button>
-    <button id="getCreationDate">
-      Get Creation Date
-    </button>
+    <button id="getStoredUint">Get Stored Uint</button>
+    <button id="getStoredAddress">Get Stored Address</button>
+    <button id="getStoredBool">Get Stored Bool</button>
+    <button id="getAddressMapping">Get Address Mapping</button>
+    <button id="getStoredString">Get Stored String</button>
+    <button id="getCreationDate">Get Creation Date</button>
     <button id="getAllData">Get All Data</button>
 
     <!-- Display results -->
@@ -42,13 +25,10 @@
 
     <script>
       // 1. Connect to the local Ganache blockchain
-      const web3 = new Web3(
-        "http://127.0.0.1:7545",
-      );
+      const web3 = new Web3("http://127.0.0.1:7545");
 
       // 2. Set the contract address and ABI (Application Binary Interface)
-      const contractAddress =
-        "0x0D3F18aC911e7785D5EF37755Edff4709104C3c0";
+      const contractAddress = "0x0D3F18aC911e7785D5EF37755Edff4709104C3c0";
       const ABI = [
         {
           inputs: [],
@@ -367,31 +347,20 @@
       ];
 
       // 3. Create the contract instance
-      const contract = new web3.eth.Contract(
-        ABI,
-        contractAddress,
-      );
+      const contract = new web3.eth.Contract(ABI, contractAddress);
 
-      const result =
-        document.getElementById("result");
+      const result = document.getElementById("result");
 
       // Function to get stored uint
       // Contract methods
       async function getStoredUint() {
         try {
           // Do something here
-          const storedUint =
-            await contract.methods
-              .getStoredUint()
-              .call();
+          const storedUint = await contract.methods.getStoredUint().call();
 
-          result.innerText =
-            "Stored Uint: " + storedUint;
+          result.innerText = "Stored Uint: " + storedUint;
         } catch (error) {
-          console.error(
-            "Error getting stored uint:",
-            error,
-          );
+          console.error("Error getting stored uint:", error);
         }
       }
 
@@ -400,18 +369,11 @@
       async function getStoredAddress() {
         try {
           // Do something here
-          const storedAddress =
-            await contract.methods
-              .getStoredAddress()
-              .call();
+          const storedAddress = await contract.methods.getStoredAddress().call();
 
-          result.innerText =
-            "Stored Address: " + storedAddress;
+          result.innerText = "Stored Address: " + storedAddress;
         } catch (error) {
-          console.error(
-            "Error getting stored address:",
-            error,
-          );
+          console.error("Error getting stored address:", error);
         }
       }
 
@@ -419,10 +381,7 @@
       async function getStoredBool() {
         try {
           // 1. encodeFunctionSignature
-          const functionSignature =
-            web3.eth.abi.encodeFunctionSignature(
-              "getStoredBool()",
-            );
+          const functionSignature = web3.eth.abi.encodeFunctionSignature("getStoredBool()");
 
           // 2. Call the contract
           const rawData = await web3.eth.call({
@@ -431,20 +390,12 @@
           });
 
           // 3. Decode the raw data
-          const storedBool =
-            web3.eth.abi.decodeParameter(
-              "bool",
-              rawData,
-            );
+          const storedBool = web3.eth.abi.decodeParameter("bool", rawData);
 
           // 4. Display the result
-          result.innerText =
-            "Stored Bool: " + storedBool;
+          result.innerText = "Stored Bool: " + storedBool;
         } catch (error) {
-          console.error(
-            "Error getting stored bool:",
-            error,
-          );
+          console.error("Error getting stored bool:", error);
         }
       }
 
@@ -452,59 +403,34 @@
       async function getAddressMapping() {
         try {
           // 1. Prompt the user to enter an address
-          const addressToCheck = prompt(
-            "Enter an address:",
-          );
+          const addressToCheck = prompt("Enter an address:");
 
           // 2. Check if the address is valid
-          if (
-            !web3.utils.isAddress(addressToCheck)
-          ) {
-            alert(
-              "Invalid address. Please try again.",
-            );
+          if (!web3.utils.isAddress(addressToCheck)) {
+            alert("Invalid address. Please try again.");
             return;
           }
 
           // 3. Encode the function signature and parameters
-          const functionSignature =
-            web3.eth.abi.encodeFunctionSignature(
-              "getAddressMapping(address)",
-            );
+          const functionSignature = web3.eth.abi.encodeFunctionSignature(
+            "getAddressMapping(address)",
+          );
 
-          const encodedParameter = web3.eth.abi
-            .encodeParameter(
-              "address",
-              addressToCheck,
-            )
-            .slice(2);
+          const encodedParameter = web3.eth.abi.encodeParameter("address", addressToCheck).slice(2);
 
           // 4. Call the contract
           const rawData = await web3.eth.call({
             to: contractAddress,
-            data:
-              functionSignature +
-              encodedParameter,
+            data: functionSignature + encodedParameter,
           });
 
           // 5. Decode the raw data
-          const mappingResult =
-            web3.eth.abi.decodeParameter(
-              "bool",
-              rawData,
-            );
+          const mappingResult = web3.eth.abi.decodeParameter("bool", rawData);
 
           // 6. Display the result
-          result.innerText =
-            "Mapping for " +
-            addressToCheck +
-            ": " +
-            mappingResult;
+          result.innerText = "Mapping for " + addressToCheck + ": " + mappingResult;
         } catch (error) {
-          console.error(
-            "Error getting address mapping:",
-            error,
-          );
+          console.error("Error getting address mapping:", error);
         }
       }
 
@@ -512,14 +438,10 @@
       async function getStoredString() {
         try {
           // 1. Get any address using getAccounts()
-          const accounts =
-            await web3.eth.getAccounts();
+          const accounts = await web3.eth.getAccounts();
 
           // 2. Encode the function signature using encodeABI()
-          const functionSignature =
-            contract.methods
-              .getStoredString()
-              .encodeABI();
+          const functionSignature = contract.methods.getStoredString().encodeABI();
 
           // 3. Call the contract using call()
           const output = await web3.eth.call({
@@ -529,21 +451,13 @@
           });
 
           // 4. Decode the raw data
-          const storedString =
-            web3.eth.abi.decodeParameter(
-              "string",
-              output,
-            );
+          const storedString = web3.eth.abi.decodeParameter("string", output);
 
           // 5. Display the result
 
-          result.innerText =
-            "Stored String: " + storedString;
+          result.innerText = "Stored String: " + storedString;
         } catch (error) {
-          console.error(
-            "Error getting stored string:",
-            error,
-          );
+          console.error("Error getting stored string:", error);
         }
       }
 
@@ -554,55 +468,35 @@
           // JavaScript's Date object expects the timestamp to be in milliseconds.
 
           // 1. Call the contract using contract.methods.creationDate().call()
-          const creationDate =
-            await contract.methods
-              .getCreateDate()
-              .call();
+          const creationDate = await contract.methods.getCreateDate().call();
 
           // 2. Format the date using toLocaleDateString()
-          const date = new Date(
-            creationDate * 1000,
-          );
+          const date = new Date(creationDate * 1000);
 
           // 3. Display the result
-          const formattedDate =
-            date.toLocaleDateString("en-US");
+          const formattedDate = date.toLocaleDateString("en-US");
 
           result.innerText = `Contract Created On: ${formattedDate}`;
         } catch (error) {
-          console.error(
-            "Error fetching contract creation date:",
-            error,
-          );
+          console.error("Error fetching contract creation date:", error);
         }
       }
 
       // Function to get all variable
       async function getAllData() {
-        const userAddress =
-          "0xC9A56671750c5E15c2727c1F1e4dC9C357CD3e88";
+        const userAddress = "0xC9A56671750c5E15c2727c1F1e4dC9C357CD3e88";
         result.innerHTML = "";
         try {
           // 1. Encode the function signature and parameters
-          const functionSignature =
-            web3.eth.abi.encodeFunctionSignature(
-              "getAllData(address)",
-            );
+          const functionSignature = web3.eth.abi.encodeFunctionSignature("getAllData(address)");
 
           // 2. Combine the function signature and parameters
-          const encodedParameter = web3.eth.abi
-            .encodeParameter(
-              "address",
-              userAddress,
-            )
-            .slice(2);
+          const encodedParameter = web3.eth.abi.encodeParameter("address", userAddress).slice(2);
 
           // 3. Low-level call to the contract
           const rawData = await web3.eth.call({
             to: contractAddress,
-            data:
-              functionSignature +
-              encodedParameter,
+            data: functionSignature + encodedParameter,
           });
 
           console.log("raw Data: ", rawData);
@@ -664,74 +558,35 @@
           ];
 
           // 2. Decode the raw data with 'decodeParameters'
-          const decodedData =
-            web3.eth.abi.decodeParameters(
-              returnTypes,
-              rawData,
-            );
+          const decodedData = web3.eth.abi.decodeParameters(returnTypes, rawData);
 
           // 3. Create a mapping of decoded values with names from returnTypes
-          const decodedWithNames =
-            returnTypes.reduce(
-              (acc, type, index) => {
-                acc[type.name] =
-                  decodedData[index];
-                console.log(acc);
-                return acc;
-              },
-              {},
-            );
+          const decodedWithNames = returnTypes.reduce((acc, type, index) => {
+            acc[type.name] = decodedData[index];
+            console.log(acc);
+            return acc;
+          }, {});
 
           // 4. Using reduce to create an object mapping parameter names (from returnTypes)
 
           for (const key in decodedWithNames) {
-            const pElement =
-              document.createElement("p");
+            const pElement = document.createElement("p");
             pElement.innerText = `${key}: ${decodedData[key]}`;
             result.append(pElement);
           }
         } catch (error) {
-          console.error(
-            "Error fetching all data:",
-            error,
-          );
+          console.error("Error fetching all data:", error);
         }
       }
 
       // Event listeners for buttons
-      document
-        .getElementById("getStoredUint")
-        .addEventListener("click", getStoredUint);
-      document
-        .getElementById("getStoredAddress")
-        .addEventListener(
-          "click",
-          getStoredAddress,
-        );
-      document
-        .getElementById("getStoredBool")
-        .addEventListener("click", getStoredBool);
-      document
-        .getElementById("getAddressMapping")
-        .addEventListener(
-          "click",
-          getAddressMapping,
-        );
-      document
-        .getElementById("getStoredString")
-        .addEventListener(
-          "click",
-          getStoredString,
-        );
-      document
-        .getElementById("getCreationDate")
-        .addEventListener(
-          "click",
-          getCreationDate,
-        );
-      document
-        .getElementById("getAllData")
-        .addEventListener("click", getAllData);
+      document.getElementById("getStoredUint").addEventListener("click", getStoredUint);
+      document.getElementById("getStoredAddress").addEventListener("click", getStoredAddress);
+      document.getElementById("getStoredBool").addEventListener("click", getStoredBool);
+      document.getElementById("getAddressMapping").addEventListener("click", getAddressMapping);
+      document.getElementById("getStoredString").addEventListener("click", getStoredString);
+      document.getElementById("getCreationDate").addEventListener("click", getCreationDate);
+      document.getElementById("getAllData").addEventListener("click", getAllData);
     </script>
   </body>
 </html>
