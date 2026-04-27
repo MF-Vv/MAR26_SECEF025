@@ -369,7 +369,9 @@
       async function getStoredAddress() {
         try {
           // Do something here
-          const storedAddress = await contract.methods.getStoredAddress().call();
+          const storedAddress = await contract.methods
+            .getStoredAddress()
+            .call();
 
           result.innerText = "Stored Address: " + storedAddress;
         } catch (error) {
@@ -381,7 +383,8 @@
       async function getStoredBool() {
         try {
           // 1. encodeFunctionSignature
-          const functionSignature = web3.eth.abi.encodeFunctionSignature("getStoredBool()");
+          const functionSignature =
+            web3.eth.abi.encodeFunctionSignature("getStoredBool()");
 
           // 2. Call the contract
           const rawData = await web3.eth.call({
@@ -416,7 +419,9 @@
             "getAddressMapping(address)",
           );
 
-          const encodedParameter = web3.eth.abi.encodeParameter("address", addressToCheck).slice(2);
+          const encodedParameter = web3.eth.abi
+            .encodeParameter("address", addressToCheck)
+            .slice(2);
 
           // 4. Call the contract
           const rawData = await web3.eth.call({
@@ -428,7 +433,8 @@
           const mappingResult = web3.eth.abi.decodeParameter("bool", rawData);
 
           // 6. Display the result
-          result.innerText = "Mapping for " + addressToCheck + ": " + mappingResult;
+          result.innerText =
+            "Mapping for " + addressToCheck + ": " + mappingResult;
         } catch (error) {
           console.error("Error getting address mapping:", error);
         }
@@ -441,7 +447,9 @@
           const accounts = await web3.eth.getAccounts();
 
           // 2. Encode the function signature using encodeABI()
-          const functionSignature = contract.methods.getStoredString().encodeABI();
+          const functionSignature = contract.methods
+            .getStoredString()
+            .encodeABI();
 
           // 3. Call the contract using call()
           const output = await web3.eth.call({
@@ -488,10 +496,14 @@
         result.innerHTML = "";
         try {
           // 1. Encode the function signature and parameters
-          const functionSignature = web3.eth.abi.encodeFunctionSignature("getAllData(address)");
+          const functionSignature = web3.eth.abi.encodeFunctionSignature(
+            "getAllData(address)",
+          );
 
           // 2. Combine the function signature and parameters
-          const encodedParameter = web3.eth.abi.encodeParameter("address", userAddress).slice(2);
+          const encodedParameter = web3.eth.abi
+            .encodeParameter("address", userAddress)
+            .slice(2);
 
           // 3. Low-level call to the contract
           const rawData = await web3.eth.call({
@@ -558,7 +570,10 @@
           ];
 
           // 2. Decode the raw data with 'decodeParameters'
-          const decodedData = web3.eth.abi.decodeParameters(returnTypes, rawData);
+          const decodedData = web3.eth.abi.decodeParameters(
+            returnTypes,
+            rawData,
+          );
 
           // 3. Create a mapping of decoded values with names from returnTypes
           const decodedWithNames = returnTypes.reduce((acc, type, index) => {
@@ -580,13 +595,27 @@
       }
 
       // Event listeners for buttons
-      document.getElementById("getStoredUint").addEventListener("click", getStoredUint);
-      document.getElementById("getStoredAddress").addEventListener("click", getStoredAddress);
-      document.getElementById("getStoredBool").addEventListener("click", getStoredBool);
-      document.getElementById("getAddressMapping").addEventListener("click", getAddressMapping);
-      document.getElementById("getStoredString").addEventListener("click", getStoredString);
-      document.getElementById("getCreationDate").addEventListener("click", getCreationDate);
-      document.getElementById("getAllData").addEventListener("click", getAllData);
+      document
+        .getElementById("getStoredUint")
+        .addEventListener("click", getStoredUint);
+      document
+        .getElementById("getStoredAddress")
+        .addEventListener("click", getStoredAddress);
+      document
+        .getElementById("getStoredBool")
+        .addEventListener("click", getStoredBool);
+      document
+        .getElementById("getAddressMapping")
+        .addEventListener("click", getAddressMapping);
+      document
+        .getElementById("getStoredString")
+        .addEventListener("click", getStoredString);
+      document
+        .getElementById("getCreationDate")
+        .addEventListener("click", getCreationDate);
+      document
+        .getElementById("getAllData")
+        .addEventListener("click", getAllData);
     </script>
   </body>
 </html>
