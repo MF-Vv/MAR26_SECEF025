@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DataStorage Setter Functions</title>
+    <script src="../node_modules/web3.js-browser/build/web3.js"></script>
+  </head>
+  <body>
+    <h1>Setter Functions for DataStorage Contract</h1>
+
+    <!-- Input Fields for Each Setter -->
+    <div>
+      <label>Set Uint:</label>
+      <input type="text" id="uintInput" placeholder="Enter uint value" />
+      <button onclick="setStoredUint()">Set Uint</button>
+    </div>
+
+    <div>
+      <label>Set Address:</label>
+      <input type="text" id="addressInput" placeholder="Enter address" />
+      <button onclick="setStoredAddress()">Set Address</button>
+    </div>
+
+    <div>
+      <label>Set Bool:</label>
+      <select id="boolInput">
+        <option value="true">True</option>
+        <option value="false">False</option>
+      </select>
+      <button onclick="setStoredBool()">Set Bool</button>
+    </div>
+
+    <div>
+      <label>Set String:</label>
+      <input type="text" id="stringInput" placeholder="Enter string" />
+      <button onclick="setStoredString()">Set String</button>
+    </div>
+
+    <div>
+      <label>Set Mapping (Address & Value):</label>
+      <input type="text" id="mapAddressInput" placeholder="Enter address" />
+      <select id="mapValueInput">
+        <option value="true">True</option>
+        <option value="false">False</option>
+      </select>
+      <button onclick="setAddressMapping()">Set Mapping</button>
+    </div>
+
+    <div>
+      <br />
+      <br />
+      <button onclick="setAllData()">Set All Data</button>
+    </div>
+
+    <p id="status"></p>
+
+    <script>
+      const uintInput = document.getElementById("uintInput");
+      const addressInput = document.getElementById("addressInput");
+      const boolInput = document.getElementById("boolInput");
+      const stringInput = document.getElementById("stringInput");
+      const mappingAddressInput = document.getElementById("mapAddressInput");
+      const mappingBoolInput = document.getElementById("mapValueInput");
+
+      const statusDiv = document.getElementById("status");
+
+      // 1. Connect to the local Ganache blockchain
+      const web3 = new Web3("http://127.0.0.1:7545");
+
+      // 2. Set the contract address and ABI
+      const contractAddress = "YOUR_CONTRACT_ADDRESS_HERE"; // Replace with your deployed contract address
+      const ABI = "YOUR_CONTRACT_ABI_HERE"; // Replace with your contract's ABI
+
+      // 3. Create the contract instance
+      const contract = new web3.eth.Contract(ABI, contractAddress);
+
+      // Owner account (must match contract owner)
+      const OWNER_PRI_KEY = "YOUR_OWNER_PRIVATE_KEY"; // Replace with the private key of the owner account
+      const OWNER_ADDR = "YOUR_OWNER_ADDRESS"; // Replace with the address of the owner account
+
+      function validateAddress(address, errorMessage) {
+        if (!web3.utils.isAddress(address)) {
+          statusDiv.innerText = errorMessage;
+          return;
+        }
+      }
+
+      // 4. Owner account (must match contract owner)
+
+      // Set Uint
+      // Contract method with listen events
+      async function setStoredUint() {
+        const value = uintInput.value;
+
+        try {
+          // 2. Send the transaction to the contract
+          contract.methods
+            .setStoredUint(value)
+            .send({
+              from: "0xC9A56671750c5E15c2727c1F1e4dC9C357CD3e88",
+            })
+            .on("transactionHash", (hash) => {
+              statusDiv.innerText = "Transaction sent.\n Hash: " + hash;
+            })
+            .on("confirmation", (confirmationNumber, receipt) => {
+              console.log("Receipt", receipt);
+            })
+            .on("error", (error) => {
+              console.log(error);
+              statusDiv.innerText = "Transaction failed: error occurred.";
+            });
+
+          // 4. Display the status message when the transaction is sent
+          statusDiv.innerText = "Uint value set successfully!";
+        } catch (error) {
+          statusDiv.innerText =
+            "Failed to set uint value. Please check your connection or contract.";
+        }
+      }
+
+      // Set Address
+      // Address validation, estimateGas, send({})
+      async function setStoredAddress() {
+        const value = addressInput.value;
+
+        // 1. Validate if the input value is a valid Ethereum address
+        if (!web3.utils.isAddress(value)) {
+          statusDiv.innerText =
+            "Failed to set the address: Invalid Ethereum address";
+          return;
+        }
+
+        try {
+          // 2. Estimate the gas required for the transaction (contract method approach)
+          const gasEstimate = await contract.methods
+            .setStoredAddress(value)
+            .estimateGas({
+              from: OWNER_ADDR,
+            });
+
+          // 3. Send the transaction to the contract (contract method approach)
+          contract.methods
+            .setStoredAddress(value)
+            .send({
+              from: OWNER_ADDR,
+              gas: gasEstimate + 1000,
+            })
+            .on("transactionHash", (hash) => {
+              statusDiv.innerText = "Transaction sent.\n Hash: " + hash;
+            })
+            .on("confirmation", (confirmationNumber, receipt) => {
+              console.log("Receipt", receipt);
+            })
+            .on("error", (error) => {
+              console.log(error);
+              statusDiv.innerText = "Transaction failed: error occurred.";
+            });
+        } catch (error) {
+          status.innerText = "Failed to set the address";
+        }
+      }
+
+      // Set Bool
+      // privateKeyToAccount, encodeFunctionSignature, encodeParameter, estimateGas, getGasPrice, signTransaction, sendSignedTransaction
+      async function setStoredBool() {
+        // 1. Prompt the user to enter their private key
+        const privateKey = prompt("Please enter your private key: ");
+        // const privateKey = OWNER_PRI_KEY;
+
+        let derivedAccount;
+        try {
+          // 2. Derived account from the private key
+          derivedAccount = web3.eth.accounts.privateKeyToAccount(privateKey);
+        } catch (error) {
+          statusDiv.innerText =
+            "Failed to set the bool value: Invalid private key";
+          return;
+        }
+
+        // 3. Get the boolean value from the input
+        const value = boolInput.value === "true";
+
+        // 4. Encode the function signature and parameter
+        const functionSignature = web3.eth.abi.encodeFunctionSignature(
+          "setStoredBool(bool)",
+        );
+        const encodedParameter = web3.eth.abi.encodeParameter("bool", value);
+        const data = functionSignature + encodedParameter.slice(2);
+
+        try {
+          // 5. Estimate the gas required for the transaction (data-based approach)
+          const gasEstimate = await web3.eth.estimateGas({
+            to: contractAddress,
+            from: derivedAccount.address,
+            data,
+          });
+
+          // 5. Estimate the gas required for the transaction (contract-based approach)
+          const gasEstimateContract = await contract.methods
+            .setStoredBool(value)
+            .estimateGas({
+              from: derivedAccount.address,
+            });
+
+          console.log(gasEstimate, gasEstimateContract);
+
+          // 6. Get the gas price
+          const gasPrice = await web3.eth.getGasPrice();
+
+          const tx = {
+            to: contractAddress,
+            data,
+            gas: gasEstimate + 1000,
+            gasPrice,
+          };
+
+          // 7. Sign and send the transaction
+          const signedTx = await web3.eth.accounts.signTransaction(
+            tx,
+            privateKey,
+          );
+
+          web3.eth
+            .sendSignedTransaction(signedTx.rawTransaction)
+            .on("transactionHash", (hash) => {
+              statusDiv.innerText = "Transaction sent.\n Hash: " + hash;
+            })
+            .on("confirmation", (confirmationNumber, receipt) => {
+              console.log("Receipt", receipt);
+            })
+            .on("error", (error) => {
+              console.log(error);
+              statusDiv.innerText = "Transaction failed: error occurred.";
+            });
+
+          // 8. Listen for the transaction events
+          // 9. Display the status message when the transaction is sent
+        } catch (error) {
+          statusDiv.innerText = "Failed to set the bool value";
+        }
+      }
+
+      // Set String
+      async function setStoredString() {
+        const value = stringInput.value;
+
+        // 1. Check if the input string is empty
+        if (!value || value.trim() === "") {
+          statusDiv.innerText =
+            "Failed to set the string value: Input cannot be empty";
+          return;
+        }
+
+        // 2. Send the transaction to the contract (contract method approach)
+        contract.methods
+          .setStoredString(value)
+          .send({
+            from: OWNER_ADDR,
+          })
+          .on("transactionHash", (hash) => {
+            statusDiv.innerText = "Transaction sent.\n Hash: " + hash;
+          })
+          .once("confirmation", (confirmationNumber, receipt) => {
+            console.log("CN: ", confirmationNumber, receipt?.blockNumber);
+          })
+          .on("error", (error) => {
+            console.log(error);
+            statusDiv.innerText = "Transaction failed: error occurred.";
+          });
+
+        // 3. Listen for the transaction events
+        // 3.1 Listen the confirmation event for once
+
+        // 4. Display the status message when the transaction is sent
+      }
+
+      // Set Mapping
+      async function setAddressMapping() {
+        const address = mappingAddressInput.value;
+        const value = mappingBoolInput.value === "true";
+
+        // 1. Validate if the input value is a valid Ethereum address
+        validateAddress(address, "Invalid Ethereum address");
+
+        // 2. Send the transaction to the contract (contract method approach)
+        contract.methods
+          .setAddressMapping(address, value)
+          .send({
+            from: OWNER_ADDR,
+          })
+          .on("transactionHash", (hash) => {
+            statusDiv.innerText = "Transaction sent.\n Hash: " + hash;
+          })
+          .once("confirmation", (confirmationNumber, receipt) => {
+            console.log("CN: ", confirmationNumber, receipt?.blockNumber);
+          })
+          .on("error", (error) => {
+            console.log(error);
+            statusDiv.innerText = "Transaction failed: error occurred.";
+          });
+
+        // 3. Listen for the transaction events
+
+        // 4. Display the status message when the transaction is sent
+      }
+
+      // Function to send a transaction
+      async function setAllData() {
+        /*
+          uint256 _newUint,
+          address _newAddress,
+          bool _newBool,
+          string memory _newString,
+          address _addr,
+          bool _value
+        */
+        const newUint = uintInput.value;
+        const newAddress = addressInput.value;
+        const newBool = boolInput.value;
+        const newString = stringInput.value;
+        const mappingAddress = mappingAddressInput.value;
+        const mappingValue = mappingBoolInput.value;
+
+        // 1. Prepare the transaction
+        const data = contract.methods
+          .setAllData(
+            newUint,
+            newAddress,
+            newBool,
+            newString,
+            mappingAddress,
+            mappingValue,
+          )
+          .encodeABI();
+
+        // 2. Estimate the gas required for the transaction
+        const gasEstimate = await contract.methods
+          .setAllData(
+            newUint,
+            newAddress,
+            newBool,
+            newString,
+            mappingAddress,
+            mappingValue,
+          )
+          .estimateGas({
+            from: OWNER_ADDR,
+          });
+
+        // 3. Get the gas price
+        const gasPrice = await web3.eth.getGasPrice();
+
+        // 5. Sign and send the transaction
+        const tx = {
+          from: OWNER_ADDR,
+          to: contractAddress,
+          data,
+          gas: gasEstimate,
+          gasPrice,
+        };
+
+        // 6. Listen for the transaction events
+        try {
+          const signedTx = await web3.eth.accounts.signTransaction(
+            tx,
+            OWNER_PRI_KEY,
+          );
+
+          web3.eth
+            .sendSignedTransaction(signedTx.rawTransaction)
+            .on("transactionHash", (hash) => {
+              statusDiv.innerText = "Transaction sent.\n Hash: " + hash;
+            })
+            .once("confirmation", (confirmationNumber, receipt) => {
+              console.log("Receipt", receipt);
+            })
+            .on("error", (error) => {
+              console.log(error);
+              statusDiv.innerText = "Transaction failed: error occurred.";
+            });
+        } catch (error) {
+          statusDiv.innerText =
+            "Failed to set all data. Please check your connection or contract.";
+          console.error("Error setting all data:", error);
+        }
+      }
+    </script>
+  </body>
+</html>
