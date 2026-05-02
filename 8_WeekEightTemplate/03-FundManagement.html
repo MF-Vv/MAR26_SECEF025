@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Smart Contract Funds Management</title>
+    <!-- Notyf CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css"
+    />
+    <!-- Notyf JS -->
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+    <!-- Web3 JS -->
+    <script src="../node_modules/web3.js-browser/build/web3.min.js"></script>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      h2 {
+        color: #333;
+        text-align: center;
+      }
+      h4 {
+        color: #555;
+        margin-bottom: 15px;
+      }
+      .form-group {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      label {
+        width: 150px;
+        font-weight: normal;
+        margin-right: 10px;
+        font-size: 0.9rem;
+      }
+      input[type="text"],
+      input[type="number"] {
+        width: calc(100% - 170px);
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        padding: 8px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .section {
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        width: 100%;
+        max-width: 500px;
+      }
+      .button-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 10px;
+      }
+      .container {
+        width: 100%;
+        max-width: 500px;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Contract Funds Management</h2>
+
+      <div class="section">
+        <h4>
+          Contract Balance:
+          <span id="contractBalance"
+            >Loading...</span
+          >
+        </h4>
+      </div>
+
+      <!-- Send Funds Section -->
+      <div class="section">
+        <h4>Send Funds To Smart Contract</h4>
+        <div class="form-group">
+          <label for="privateKeyInput"
+            >Private Key:</label
+          >
+          <input
+            type="text"
+            id="privateKeyInput"
+            value="0xca25e2b85e3a2a761b8fae59327cca0c1a05f825509cb080452de0b64ba24e2f"
+          />
+        </div>
+        <div class="form-group">
+          <label for="amountInput"
+            >Amount (ETH):</label
+          >
+          <input
+            type="number"
+            id="amountInput"
+            value="0.1"
+          />
+        </div>
+        <div class="button-container">
+          <button id="sendFundBtn">
+            Send Funds
+          </button>
+        </div>
+      </div>
+
+      <!-- Withdraw Funds Section -->
+      <div class="section">
+        <h4>
+          Withdraw Funds With Specific Amount
+        </h4>
+        <div class="form-group">
+          <label for="privateKeyWithdrawInput"
+            >Private Key:</label
+          >
+          <input
+            type="text"
+            id="privateKeyWithdrawInput"
+            value="0xca25e2b85e3a2a761b8fae59327cca0c1a05f825509cb080452de0b64ba24e2f"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="withdrawAmountInput"
+            >Amount (Wei):</label
+          >
+          <input
+            type="text"
+            id="withdrawAmountInput"
+            value="100000000000000000"
+          />
+        </div>
+
+        <div class="button-container">
+          <button id="withdrawFundBtn">
+            Withdraw Funds
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast JS -->
+    <script>
+      // Toast message function
+      // Initialize Notyf
+      const notyf = new Notyf({
+        duration: 3000,
+        position: { x: "right", y: "top" },
+      });
+
+      function showToast({ type, message }) {
+        if (type === "success") {
+          // Notyf Success
+          notyf.success(`${message}`);
+        } else if (type === "error") {
+          // Notyf Error
+          notyf.error(`${message}`);
+        } else {
+          console.error(
+            "Invalid toast type. Use 'success' or 'error'.",
+          );
+        }
+      }
+
+      // showToast({ type: "success", message: "Transaction Successful." })
+      // showToast({ type: "error", message: "Transaction Failed!" })
+    </script>
+
+    <!-- Web3 JS -->
+    <script>
+      // 1. Connect to the local Ganache blockchain
+
+      // 2. Set the contract address and ABI (Application Binary Interface)
+
+      // 3. Create the contract instance
+
+      const balanceSpan = document.getElementById(
+        "contractBalance",
+      );
+      const sendFundPrivateKey =
+        document.getElementById(
+          "privateKeyInput",
+        );
+      const sendFundAmount =
+        document.getElementById("amountInput");
+
+      async function getContractBalance() {
+        try {
+          // 1. Encode function signature
+
+          // 2. Call the contract method
+
+          // 3. Decode the result - hexToNumberString
+
+          // 4. Display the balance
+
+          balanceSpan.innerText = contractBalance;
+        } catch (error) {
+          console.error(error);
+          balanceSpan.innerHTML =
+            "Error fetching balance.";
+        }
+      }
+
+      // Send funds via receive() special function
+      async function sendFundsViaSignedTx() {
+        const privateKey =
+          sendFundPrivateKey.value;
+        const valueInETH = sendFundAmount.value;
+
+        try {
+          // 1. Derive account from private key
+          // 2. Convert value to Wei
+          // 3. Get gas price
+          // 4. Get nonce
+          // 5. Create transaction object
+          // 6. Sign transaction
+          // 7. Send signed transaction
+          // 8. Listen for transaction events
+        } catch (error) {
+          console.error(error);
+          showToast({
+            type: "error",
+            message: "Transaction Failed!",
+          });
+        }
+      }
+
+      // Send funds via custom function
+      async function sendFundsViaEncodeABI() {
+        const privateKey =
+          sendFundPrivateKey.value;
+        const valueInETH = sendFundAmount.value;
+
+        try {
+          // 1. Derive account from private key
+          // 2. Encode ABI
+          // 3. Get gas price
+          // 4. Get nonce
+          // 5. Create transaction object
+          // 6. Sign transaction
+          // 7. Send signed transaction
+          // 8. Listen for transaction events
+        } catch (error) {
+          console.error(error);
+          showToast({
+            type: "error",
+            message: "Transaction Failed!",
+          });
+        }
+      }
+
+      /*
+        Withdraw funds
+          - privateKeyToAccount
+          - estimateGas & getGasPrice
+          - encodeABI
+          - signTransaction
+          - sendSignedTransaction
+          - on(listen event)
+      */
+      async function withdrawFundsViaSignedTx() {
+        const privateKey =
+          document.getElementById(
+            "privateKeyWithdrawInput",
+          ).value;
+        const amountInWei =
+          document.getElementById(
+            "withdrawAmountInput",
+          ).value;
+
+        try {
+          // 1. Derive account from private key
+          // 2. Get gas price
+          // 3. Encode ABI
+          // 4. Get nonce
+          // 5. Create transaction object
+          // 6. Sign transaction
+          // 7. Send signed transaction
+          // 8. Listen for transaction events
+        } catch (error) {
+          showToast({
+            type: "error",
+            message: "Transaction Failed!",
+          });
+          console.error(error);
+
+          // 1. Stringify the error message
+
+          // 2. Clean up the error message
+
+          // 3. Parse the error message
+
+          // 4. Display the error message
+        }
+      }
+
+      document
+        .getElementById("sendFundBtn")
+        .addEventListener(
+          "click",
+          sendFundsViaSignedTx,
+        );
+
+      document
+        .getElementById("withdrawFundBtn")
+        .addEventListener(
+          "click",
+          withdrawFundsViaSignedTx,
+        );
+
+      window.onload = async () => {
+        await getContractBalance();
+      };
+    </script>
+  </body>
+</html>
