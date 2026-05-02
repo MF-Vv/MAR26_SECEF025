@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MetaMask JSON-RPC API Example</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      button {
+        margin: 10px 0;
+        padding: 10px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      button:disabled {
+        background-color: #004f04;
+      }
+      #output {
+        margin-top: 20px;
+      }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>MetaMask JSON-RPC API Methods V1</h1>
+
+      <!-- Buttons to trigger actions -->
+      <button id="connectButton">Connect to MetaMask</button>
+      <button id="getAccountsButton" disabled>Get Accounts</button>
+      <button id="getChainIdButton">Get Chain ID</button>
+
+      <div id="output">Please connect to MetaMask.</div>
+    </div>
+
+    <script>
+      // 1. Create a Web3 instance with MetaMask's Ethereum provider
+      const web3 = new Web3(window.ethereum);
+
+      let outputDiv = document.getElementById("output");
+      let getAccBtn = document.getElementById("getAccountsButton");
+      let getChainIdBtn = document.getElementById("getChainIdButton");
+
+      /*
+        1. eth_requestAccounts
+
+        2. personal_sign
+          2.1: prevent double sign request (setup logical if-else)
+                -> isConnected, isSignPromptTriggered
+
+        3. .on('accountsChanged')
+          3.1: prevent double sign request (if switch frequently)
+        */
+      async function connect() {
+        try {
+          window.ethereum
+            .request({
+              method: "eth_requestAccounts",
+            })
+            .then((accounts) => {
+              console.log(accounts);
+              outputDiv.innerHTML = "Metamask connected: " + accounts[0];
+              getAccBtn.disabled = false;
+            });
+        } catch (error) {
+          outputDiv.innerHTML = "";
+        }
+      }
+
+      async function getAccounts() {
+        try {
+          window.ethereum
+            .request({
+              method: "eth_accounts",
+            })
+            .then((accounts) => {
+              console.log(accounts);
+              outputDiv.innerHTML = "Accounts: " + accounts;
+            });
+        } catch (error) {
+          outputDiv.innerHTML = "";
+        }
+      }
+
+      async function getChainId() {
+        try {
+          chainId = await window.ethereum
+            .request({
+              method: "eth_chainId",
+            })
+            .then((chainId) => {
+              console.log(chainId);
+              outputDiv.innerHTML = "Chain ID: " + chainId;
+            });
+        } catch (error) {
+          outputDiv.innerHTML = "";
+        }
+      }
+
+      document
+        .getElementById("connectButton")
+        .addEventListener("click", connect);
+
+      document
+        .getElementById("getAccountsButton")
+        .addEventListener("click", getAccounts);
+
+      document
+        .getElementById("getChainIdButton")
+        .addEventListener("click", getChainId);
+    </script>
+  </body>
+</html>
