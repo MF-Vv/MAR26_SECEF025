@@ -2,10 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MetaMask JSON-RPC API Example</title>
     <style>
       body {
@@ -38,25 +35,18 @@
       <h1>MetaMask JSON-RPC API Methods V1</h1>
 
       <!-- Buttons to trigger actions -->
-      <button id="connectButton">
-        Connect to MetaMask
-      </button>
-      <button id="getAccountsButton" disabled>
-        Get Accounts
-      </button>
+      <button id="connectButton">Connect to MetaMask</button>
+      <button id="getAccountsButton" disabled>Get Accounts</button>
 
-      <div id="output">
-        Please connect to MetaMask.
-      </div>
+      <div id="output">Please connect to MetaMask.</div>
     </div>
 
     <script>
-      ·
-            // 1. Create a Web3 instance with MetaMask's Ethereum provider
+      // 1. Create a Web3 instance with MetaMask's Ethereum provider
 
-            let outputDiv = document.getElementById("output")
+      let outputDiv = document.getElementById("output");
 
-            /*
+      /*
               1. eth_requestAccounts
 
               2. personal_sign
@@ -67,27 +57,27 @@
                 3.1: prevent double sign request (if switch frequently)
             */
 
-            async function connect() {
-              try {
-              } catch (error) {
-                outputDiv.innerHTML = ""
-              }
-            }
+      async function connect() {
+        try {
+        } catch (error) {
+          outputDiv.innerHTML = "";
+        }
+      }
 
-            async function getAccounts() {
-              try {
-              } catch (error) {
-                outputDiv.innerHTML = ""
-              }
-            }
+      async function getAccounts() {
+        try {
+        } catch (error) {
+          outputDiv.innerHTML = "";
+        }
+      }
 
-            document
-              .getElementById("connectButton")
-              .addEventListener("click", connect)
+      document
+        .getElementById("connectButton")
+        .addEventListener("click", connect);
 
-            document
-              .getElementById("getAccountsButton")
-              .addEventListener("click", getAccounts)
+      document
+        .getElementById("getAccountsButton")
+        .addEventListener("click", getAccounts);
     </script>
   </body>
 </html>
