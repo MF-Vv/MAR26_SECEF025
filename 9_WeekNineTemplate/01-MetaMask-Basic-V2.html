@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MetaMask JSON-RPC API Example</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      button {
+        margin: 10px 0;
+        padding: 10px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      button:disabled {
+        background-color: #004f04;
+      }
+      #output {
+        margin-top: 20px;
+      }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Basic MetaMask JSON-RPC API Methods V2</h1>
+
+      <!-- Buttons to trigger actions -->
+      <button id="connectButton">Connect to MetaMask</button>
+      <button id="getAccountsButton" disabled>Get Accounts</button>
+
+      <!-- New Button -->
+      <button id="getChainIDButton">Get Chain ID</button>
+      <button id="getGasPriceButton">Get Gas Price</button>
+      <button id="switchNetworkButton">Switch To Ganache Network</button>
+      <button id="addNetworkButton">Add Ganache Network</button>
+
+      <div id="output">Please connect to MetaMask.</div>
+    </div>
+
+    <script>
+      const web3 = new Web3(window.ethereum);
+      const outputDiv = document.getElementById("output");
+
+      let isConnected = false;
+      let isSignPromptTriggered = false;
+
+      function setFuncBtnState(condition) {
+        document.getElementById("connectButton").disabled = condition;
+        document.getElementById("getAccountsButton").disabled = !condition;
+        document.getElementById("getChainIDButton").disabled = !condition;
+        document.getElementById("getGasPriceButton").disabled = !condition;
+        // document.getElementById("switchNetworkButton").disabled = !condition
+      }
+
+      // Add accountsChanged event
+      if (window.ethereum) {
+        window.ethereum.on("accountsChanged", async (accounts) => {
+          console.log(accounts);
+          outputDiv.innerHTML =
+            "You have switched your address. Please connect to MetaMask.";
+          setFuncBtnState(false);
+          isConnected = false;
+
+          if (accounts.length === 0) {
+            outputDiv.innerHTML = "No accounts connected. Please connect.";
+            return;
+          }
+
+          try {
+            const signAcc = await connectSignSingle();
+
+            const currentAcc = await getAccounts();
+
+            // Fixed bug
+            if (signAcc !== currentAcc) {
+              document.getElementById("connectButton").disabled = false;
+              document.getElementById("getAccountsButton").disabled = true;
+              outputDiv.innerHTML = "Resign Again!";
+              isConnected = false;
+              signPromptTriggered = false;
+            }
+
+            isConnected = true;
+          } catch (error) {
+            outputDiv.innerHTML = "User rejected connection!";
+            signPromptTriggered = false;
+          }
+        });
+      }
+
+      async function connectSignSingle() {
+        if (window.ethereum) {
+          if (isSignPromptTriggered) {
+            outputDiv.innerHTML = "Please approve the signature request.";
+            return;
+          }
+
+          try {
+            const accounts = await window.ethereum.request({
+              method: "eth_requestAccounts",
+              params: [],
+            });
+
+            isSignPromptTriggered = true;
+            const message = `Please sign this message to confirm your identity.\n\nThis request will not trigger a blockchain transaction or cost any gas fees.\n\nWallet address: ${accounts[0]}`;
+            const hexMessage = web3.utils.utf8ToHex(message);
+            const signature = await window.ethereum.request({
+              method: "personal_sign",
+              params: [hexMessage, accounts[0]],
+            });
+
+            console.log(signature);
+
+            isConnected = true;
+            isSignPromptTriggered = false;
+
+            setFuncBtnState(true);
+
+            outputDiv.innerHTML = `Connected account: ${accounts[0]}`;
+
+            return accounts[0];
+          } catch (error) {
+            isSignPromptTriggered = false;
+            outputDiv.innerHTML = "User rejected connection!";
+          }
+        } else {
+          outputDiv.innerHTML = "MetaMask is not installed!";
+        }
+      }
+
+      async function getAccounts() {
+        const accounts = await window.ethereum.request({
+          method: "eth_accounts",
+        });
+        outputDiv.innerHTML =
+          accounts.length > 0
+            ? `Connected accounts: ${accounts.join(", ")}`
+            : "No accounts connected";
+
+        return accounts[0];
+      }
+
+      document
+        .getElementById("connectButton")
+        .addEventListener("click", connectSignSingle);
+
+      document
+        .getElementById("getAccountsButton")
+        .addEventListener("click", getAccounts);
+    </script>
+
+    <script>
+      // New button
+      const buttonActions = {
+        getChainIDButton: "getChainID",
+      };
+
+      // Dynamically add event listeners based on the object
+      Object.entries(buttonActions).forEach(([id, functionName]) => {
+        const button = document.getElementById(id);
+        if (button && typeof window[functionName] === "function") {
+          button.addEventListener("click", window[functionName]);
+        }
+      });
+
+      /*
+        --------------------------------------
+        |   Add New Button For New Function  |
+        --------------------------------------
+
+        6. 'eth_chainId' 
+                      - Get the current chain ID
+
+        7. 'eth_gasPrice' 
+                      - Retrieve the current gas price
+
+        8. 'wallet_switchEthereumChain' 
+                      - Switch to a different Ethereum chain
+
+        9. 'addGanacheNetwork' 
+                      - Add a local Ganache network
+                      
+        10. 'verifySignature' 
+                      - Verify a digital signature
+      */
+
+      async function getChainID() {
+        try {
+          // return chainID
+        } catch (error) {
+          outputDiv.innerHTML = "Error! MetaMask is not installed!";
+        }
+      }
+
+      async function getGasPrice() {
+        try {
+        } catch (error) {
+          outputDiv.innerHTML = "Error! MetaMask is not installed!";
+        }
+      }
+
+      async function switchToGanacheNetwork() {
+        const ganacheChainId = "0x539";
+
+        try {
+        } catch (error) {
+          outputDiv.innerHTML = "Error! MetaMask is not installed!";
+        }
+      }
+
+      async function addGanacheNetwork() {
+        try {
+        } catch (error) {
+          outputDiv.innerHTML = "Error! MetaMask is not installed!";
+        }
+      }
+
+      // Personal Sign
+      async function verifySignature(message, signature, expectedAddress) {
+        // Hash the message with the Ethereum prefix
+        const messageHash = web3.eth.accounts.hashMessage(message);
+
+        // Recover the signer address from the signature
+        const signerAddress = web3.eth.accounts.recover(message, signature);
+
+        console.log(signerAddress);
+
+        // Compare the recovered address with the expected address
+        if (signerAddress.toLowerCase() === expectedAddress.toLowerCase()) {
+          console.log("Signature is valid!");
+          return true;
+        } else {
+          console.log("Signature is invalid!");
+          return false;
+        }
+      }
+    </script>
+  </body>
+</html>
